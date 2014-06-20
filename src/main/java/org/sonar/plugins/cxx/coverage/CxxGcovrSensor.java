@@ -23,6 +23,7 @@ import static java.util.Locale.ENGLISH;
 import static org.sonar.api.utils.ParsingUtils.parseNumber;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -81,6 +82,19 @@ public class CxxGcovrSensor extends CxxSensor {
     }
     for (FileData cci : fileDataPerFilename.values()) {
       String filePath = cci.getFileName();
+      File cxxTempFile = null;
+      String canonicalFilePath = null;
+      try {
+	      cxxTempFile = new File(filePath);
+	      
+	      if(null != cxxTempFile) {
+	    	  canonicalFilePath = cxxTempFile.getCanonicalPath();
+	      }
+	      filePath = canonicalFilePath!=null?canonicalFilePath:filePath;
+      } catch (IOException io) {
+    	  System.out.println("IOException Occured : " + io.getMessage());
+      }
+       
       org.sonar.api.resources.File cxxfile =
         org.sonar.api.resources.File.fromIOFile(new File(filePath), project);
       if (fileExist(context, cxxfile)) {
