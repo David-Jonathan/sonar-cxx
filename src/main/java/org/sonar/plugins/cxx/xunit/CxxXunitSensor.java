@@ -20,6 +20,7 @@
 package org.sonar.plugins.cxx.xunit;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
@@ -134,6 +135,19 @@ public class CxxXunitSensor extends CxxSensor {
     
     for (TestSuite fileReport : parserHandler.getParsedReports()) {
       String fileKey = fileReport.getKey();
+      
+      File tempUnitTest = null;
+      String canonicalFilePath = null;
+      try {
+    	  tempUnitTest = new File(fileKey);
+	      
+	      if(null != tempUnitTest) {
+	    	  canonicalFilePath = tempUnitTest.getCanonicalPath();
+	      }
+	      fileKey = canonicalFilePath!=null?canonicalFilePath:fileKey;
+      } catch (IOException io) {
+    	  CxxUtils.LOG.debug("CxxXunitSensor.parseReport() : IOException occured while fetching canonical path for the file '{}'", fileKey);
+      }
       
       org.sonar.api.resources.File unitTest =
         org.sonar.api.resources.File.fromIOFile(new File(fileKey), project);
