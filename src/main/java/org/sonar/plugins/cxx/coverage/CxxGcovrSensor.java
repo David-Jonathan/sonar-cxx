@@ -92,9 +92,9 @@ public class CxxGcovrSensor extends CxxSensor {
 	      }
 	      filePath = canonicalFilePath!=null?canonicalFilePath:filePath;
       } catch (IOException io) {
-    	  System.out.println("IOException Occured : " + io.getMessage());
+    	  CxxUtils.LOG.debug("CxxGcovrSensor.analyse() : IOException occured while fetching canonical path for the file '{}'", filePath);
       }
-       
+ 
       org.sonar.api.resources.File cxxfile =
         org.sonar.api.resources.File.fromIOFile(new File(filePath), project);
       if (fileExist(context, cxxfile)) {
