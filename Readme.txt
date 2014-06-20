@@ -12,3 +12,6 @@ http://nemo.sonarsource.org/dashboard/index/404842
 
 Sample Projects:
 src/samples
+
+
+Since some of the sensors are deprecated in the master, I'm maintaining those in this branch to cater to the dependencies in our org
