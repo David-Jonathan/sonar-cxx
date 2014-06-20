@@ -20,6 +20,7 @@
 package org.sonar.plugins.cxx.utils;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -130,6 +131,19 @@ public abstract class CxxSensor implements Sensor {
       .withKey(ruleId);
     Rule rule = ruleFinder.find(ruleQuery);
     if (rule != null) {
+        File tempResource = null;
+        String canonicalFilePath = null;
+        try {
+        	tempResource = new File(file);
+  	      
+  	      if(null != tempResource) {
+  	    	  canonicalFilePath = tempResource.getCanonicalPath();
+  	      }
+  	      file = canonicalFilePath!=null?canonicalFilePath:file;
+        } catch (IOException io) {
+      	  CxxUtils.LOG.debug("CxxSensor.saveViolation() : IOException occured while fetching canonical path for the file '{}'", file);
+        }
+
       org.sonar.api.resources.File resource =
         org.sonar.api.resources.File.fromIOFile(new File(file), project);
       if (context.getResource(resource) != null) {
