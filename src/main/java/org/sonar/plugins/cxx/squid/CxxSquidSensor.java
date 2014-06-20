@@ -51,6 +51,18 @@ public final class CxxSquidSensor extends CxxSensor {
     
     for (InputFile inputFile : sources) {
       File file = inputFile.getFile();
+
+      String canonicalFilePath = null;
+      try {
+	      if(null != file) {
+	    	  canonicalFilePath = file.getCanonicalPath();
+	      }
+	      file = new File(canonicalFilePath);
+	      
+      } catch (IOException io) {
+    	  CxxUtils.LOG.debug("CxxSquidSensor.analyse() : IOException occured while fetching canonical path for the file '{}'", canonicalFilePath);
+      }
+      
       org.sonar.api.resources.File cxxFile = org.sonar.api.resources.File.fromIOFile(file, project);
       
       CxxUtils.LOG.debug("Saving size measures for file '{}'", file.getPath());
